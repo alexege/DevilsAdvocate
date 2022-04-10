@@ -1,35 +1,74 @@
 <template>
   <div class="container">
     <header class="jumbotron">
+
+      <div v-for="topic in allTopics" :key="topic._id">
+        [{{ topic.name }}]
+      </div>
+
       <h3>
-        <pre>{{content}}</pre>
+        <pre>{{allTopics}}</pre>
       </h3>
+
+      <!-- Add Topic -->
+      <div>
+        <input type="text" v-model="topic.name" placeholder="Topic">
+        <input type="submit" value="Submit" @click="addTopic">
+      </div>
+
     </header>
   </div>
 </template>
 
 <script>
-import UserService from '../services/user.service';
+// import UserService from '../services/user.service';
+import TopicService from '../services/topic.service';
 
 export default {
   name: 'Dashboard',
   data() {
     return {
-      content: ''
+      allTopics: '',
+      topic: {
+        name: null
+      }
     };
   },
+
+  methods:{
+    addTopic() {
+      return this.$store.dispatch('topic/addTopic', this.topic)
+      .then(() => {
+        this.topic.name = '';
+        TopicService.getAllTopics();
+      })
+    }
+  },
+
   mounted() {
-    UserService.getPublicContent().then(
+    TopicService.getAllTopics().then(
       response => {
-        this.content = response.data;
+        this.allTopics = response.data;
       },
       error => {
-        this.content =
+        this.allTopics =
           (error.response && error.response.data && error.response.data.message) ||
           error.message ||
           error.toString();
       }
     );
+
+    // UserService.getPublicContent().then(
+    //   response => {
+    //     this.content = response.data;
+    //   },
+    //   error => {
+    //     this.content =
+    //       (error.response && error.response.data && error.response.data.message) ||
+    //       error.message ||
+    //       error.toString();
+    //   }
+    // );
 
   }
 };
@@ -38,5 +77,7 @@ export default {
 <style scoped>
   .jumbotron {
     background-color: white;
+    min-height: 100vh;
+    height: 100%;
   }
 </style>
