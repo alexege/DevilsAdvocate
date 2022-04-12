@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import { topic } from '../../../Server/models';
 
 const API_URL = 'http://localhost:8080/api/topic/';
 
@@ -28,21 +29,17 @@ class TopicService {
     })
   }
 
-  // addTopic(topic) {
-  //   const user = JSON.parse(localStorage.getItem('user'));
-
-  //   return axios.post(API_URL + 'addTopic', {
-  //       name: topic.name,
-  //       author: user.id
-  //   })
-  //   .then(res => {
-  //     console.log("[service] res:", res);
-  //       return res.data;
-  //   })
-  //   .then(err => {
-  //       return err;
-  //   })
-  // }
+  editTopic(topic) {
+    return axios.post(API_URL + `editTopic/${topic._id}`, {
+        name: topic.name
+    })
+    .then(res => {
+        return res;
+    })
+    .catch(err => {
+        return err;
+    })
+}
 
   deleteTopic(id) {
     return axios.delete(API_URL + `delete/${id}`, { data: id })

@@ -8,20 +8,6 @@ export const topic = {
     }),
 
     actions: {
-        // addTopic({ commit }, topic) {
-        //     return TopicService.addTopic(topic)
-        //     .then(topic => {
-        //         console.log("[module] topic: ", topic);
-        //         commit('addTopicSuccess', topic);
-        //         return Promise.resolve(topic);
-        //     }),
-        //     error => {
-        //         console.log("[module] topic: ", error);
-        //         commit('addTopicFailure', topic);
-        //         return Promise.reject(error);
-        //     }
-        // },
-
         addTopic({ commit }, topic) {
             return TopicService.addTopic(topic)
             .then(topic => {
@@ -32,6 +18,18 @@ export const topic = {
                 commit('addTopicFailure', topic);
                 return Promise.reject(error);
             })
+        },
+
+        editTopic({ commit }, topic) {
+            return TopicService.editTopic(topic)
+            .then(topic => {
+                commit('editTopicSuccess', topic);
+                return Promise.resolve(topic);
+            },
+            error => {
+                commit('editTopicFailure', topic);
+                return Promise.reject(error);
+            });
         },
 
         deleteTopic({ commit }, message) {
@@ -66,6 +64,16 @@ export const topic = {
             // state.topic = topic;
         },
         addTopicFailure(state, topic) {
+            console.log("state: ", state);
+            console.log("topic: ", topic);
+            // state.topic = topic;
+        },
+        editTopicSuccess(state, topic) {
+            console.log("state: ", state);
+            console.log("topic: ", topic);
+            // state.topic = topic;
+        },
+        editTopicFailure(state, topic) {
             console.log("state: ", state);
             console.log("topic: ", topic);
             // state.topic = topic;

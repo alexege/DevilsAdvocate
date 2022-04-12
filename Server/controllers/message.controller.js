@@ -6,7 +6,6 @@ const Message = db.message;
 const Comment = db.comment;
 
 exports.addMessage = (req, res) => {
-    console.log("req.body:", req.body);
 
     const message = new Message({
         title: req.body.title,
@@ -21,7 +20,6 @@ exports.addMessage = (req, res) => {
         }
 
         if(req.body.author){
-            console.log("User body author was found", req.body.author);
 
             User.findOne({
                 _id: { $in: req.body.author }
@@ -31,7 +29,6 @@ exports.addMessage = (req, res) => {
                     res.status(500).send({ message: err });
                     return;
                 }
-                console.log("author: ", author);
     
                 message.authorName = author;
 
@@ -70,8 +67,6 @@ exports.addComment = (req, res) => {
             _id: { $in: req.body.messageId }
         },
         (err, message) => {
-            console.log("Message was found: ", message);
-            console.log("Message was found: ", message.comments);
             if (err) {
                 res.status(500).send({ message: err });
                 return;
@@ -87,9 +82,7 @@ exports.addComment = (req, res) => {
         })
     })
 
-    console.log("Adding a comment", req.body);
     message.find({ _id: req.body.messageId }, (err, message) => {
-
     })
 }
 
@@ -99,8 +92,6 @@ exports.deleteMessage = (req, res) => {
             res.status(500).send({ message: err });
             return;
         }
-
-        console.log("Messag: ", message);
 
         res.status(200).send({ message: "Message deleted!" });
     })
@@ -113,8 +104,6 @@ exports.deleteComment = (req, res) => {
             return;
         }
 
-        console.log("Messag: ", comment);
-
         res.status(200).send({ message: "comment deleted!" });
     })
 }
@@ -125,12 +114,6 @@ exports.editMessage = (req, res) => {
         title: req.body.title,
         body: req.body.body
     }
-
-    console.log("req:", req.body);
-    console.log("req:", req.params.id);
-
-    // let test = Message.findById({ _id: req.params.id });
-    // console.log("test is: ", test);
 
     message.findByIdAndUpdate({ _id: req.params.id }, update ,(err, message) => {
         if (err) {

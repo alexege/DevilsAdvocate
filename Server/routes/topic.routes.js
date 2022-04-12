@@ -13,6 +13,8 @@ app.get("/api/topic/all", controller.allTopics);
 
 app.post("/api/topic/addTopic", controller.addTopic);
 
+app.post("/api/topic/editTopic/:id", controller.editTopic);
+
 app.delete("/api/topic/delete/:id", controller.deleteTopic);
 
 };
