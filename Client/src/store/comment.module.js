@@ -1,118 +1,110 @@
-// import Topic from "../../../Server/models/topic.model";
-import TopicService from "../services/topic.service";
+import CommentService from "../services/comment.service";
 
-export const topic = {
+export const comment = {
     namespaced: true,
     state: () => ({
-        topic: {}
+        comment: {}
     }),
 
     actions: {
-        addTopic({ commit }, topic) {
-            return TopicService.addTopic(topic)
-            .then(topic => {
-                commit('addTopicSuccess', topic);
-                return Promise.resolve(topic);
+        addComment({ commit }, comment) {
+            return CommentService.addComment(comment)
+            .then(comment => {
+                commit('addCommentSuccess', comment);
+                return Promise.resolve(comment);
             },
             error => {
-                commit('addTopicFailure', topic);
+                commit('addCommentFailure', comment);
                 return Promise.reject(error);
             })
         },
 
-        editTopic({ commit }, topic) {
-            return TopicService.editTopic(topic)
-            .then(topic => {
-                commit('editTopicSuccess', topic);
-                return Promise.resolve(topic);
+        editComment({ commit }, comment) {
+            return CommentService.editComment(comment)
+            .then(comment => {
+                commit('editCommentSuccess', comment);
+                return Promise.resolve(comment);
             },
             error => {
-                commit('editTopicFailure', topic);
+                commit('editCommentFailure', comment);
                 return Promise.reject(error);
             });
         },
 
-        deleteTopic({ commit }, topic) {
-            return TopicService.deleteTopic(topic)
-            .then(topic => {
-                commit('deleteTopicSuccess', topic);
-                return Promise.resolve(topic);
+        deleteComment({ commit }, comment) {
+            return CommentService.deleteComment(comment)
+            .then(comment => {
+                commit('deleteCommentSuccess', comment);
+                return Promise.resolve(comment);
             },
             error => {
-                commit('deleteTopicFailure', topic);
+                commit('deleteCommentFailure', comment);
                 return Promise.reject(error);
             });
         },
 
-        allTopics({ commit }, topic) {
-            return TopicService.getAllTopics()
+        allComments({ commit }, comment) {
+            return CommentService.allComments()
             .then(topics => {
-                commit('getAllTopicSuccess', topic);
+                commit('allCommentsSuccess', comment);
                 return Promise.resolve(topics);
             },
             error => {
-                commit('getAllTopicFailure', topic);
+                commit('allCommentsFailure', comment);
                 return Promise.reject(error);
             });
-        },
+        }
     },
 
     mutations: {
-        addTopicSuccess(
+        addCommentSuccess(
             // state, topic
             ) {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
-            // state.topic = topic;
         },
-        addTopicFailure(
+        addCommentFailure(
             // state, topic
             ) {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
-            // state.topic = topic;
         },
-        editTopicSuccess(
+        editCommentSuccess(
             // state, topic
             ) {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
-            // state.topic = topic;
         },
-        editTopicFailure(
+        editCommentFailure(
             // state, topic
             ) {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
-            // state.topic = topic;
         },
-        deleteTopicSuccess(
+        deleteCommentSuccess(
             // state, topic
             ) {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
-            // state.topic = topic;
         },
-        deleteTopicFailure(
+        deleteCommentFailure(
             // state, topic
             ) {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
-            // state.topic = topic;
         },
-        getAllTopicSuccess(
+        allCommentsSuccess(
             // state, topic
             ) {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
-            // state.topic = topic;
         },
-        getAllTopicFailure(
+        allCommentsFailure(
             // state, topic
             ) {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
-            // state.topic = topic;
         },
     }
 }
+

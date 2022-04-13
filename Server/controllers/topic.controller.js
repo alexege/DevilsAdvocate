@@ -1,6 +1,7 @@
 const db = require("../models");
 const User = require("../models/user.model");
 const Topic = db.topic;
+const Comment = db.topic;
 
 exports.allTopics = (req, res) => {
   Topic.find({}, (err, topics) => {
@@ -16,6 +17,7 @@ exports.allTopics = (req, res) => {
 exports.addTopic = (req, res) => {
   const topic = new Topic({
     name: req.body.name,
+    description: req.body.description,
     author: req.body.author,
   });
 
@@ -47,6 +49,7 @@ exports.addTopic = (req, res) => {
 
           res.status(200).send({
             name: topic.name,
+            description: topic.description,
             author: author.username,
           });
         }
@@ -58,6 +61,7 @@ exports.addTopic = (req, res) => {
 exports.editTopic = (req, res) => {
   const update = {
     name: req.body.name,
+    description: req.body.description
   };
 
   Topic.findByIdAndUpdate({ _id: req.params.id }, update, (err, topic) => {

@@ -4,7 +4,7 @@ const Topic = mongoose.model(
     "Topic",
     new mongoose.Schema({
         name: String,
-        body: String,
+        description: String,
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

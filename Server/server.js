@@ -21,6 +21,7 @@ const dbConfig = require("./config/db.config");
 const Role = require("./models/role.model");
 const User = require("./models/user.model");
 const Message = require("./models/message.model");
+const Comment = require("./models/comment.model");
 const Topic = require("./models/topic.model");
 // const Comment = require("./models/comment.model");
 const ROLE = db.role;
@@ -47,8 +48,8 @@ app.get("/", (req, res) => {
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
 require('./routes/message.routes')(app);
+require('./routes/comment.routes')(app);
 require('./routes/topic.routes')(app);
-// require('./routes/comment.routes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

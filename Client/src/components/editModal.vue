@@ -3,9 +3,17 @@
     <div class="background" @click.self="close">
       <div class="content">
         <h4>Edit Topic</h4>
-        {{ topicToEdit }}
         <label for="">Title:</label><br />
         <input type="text" v-model="topicToEdit.name" /> <br />
+        <label for="">Description:</label><br />
+        <textarea
+          name="topicToEditBody"
+          id=""
+          cols="80"
+          rows="10"
+          v-model="topicToEdit.description"
+        ></textarea
+        ><br />
         <input
           type="button"
           value="Update"
