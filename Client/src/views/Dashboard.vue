@@ -10,14 +10,21 @@
     />
 
     <header class="jumbotron">
-      <div v-for="topic in allTopics" :key="topic._id" class="topic">
-        <h5>{{ topic.name }}</h5>
+      <div v-for="(topic, index) in allTopics" :key="topic._id" class="topic">
+        <h5 class="title">{{ topic.name }}</h5>
         <div>
           {{ topic.description }}
         </div>
         <a href="" @click.prevent="editTopic(topic)">Edit </a>
         <a href="" @click.prevent="deleteTopic(topic._id)">Delete</a>
         <br />
+
+      <div class="topComments">
+        <div style="color: #00aeff">Top comment agreeing</div>
+        <div style="color: red">Top comment disagreeing</div>
+        <div style="color: orange">Top comment with other perspective</div>
+      </div>
+
         <!-- Add Comment -->
         <div class="commentInput">
           <input type="text" v-model="comment.body" placeholder="Comment" />
@@ -26,8 +33,19 @@
 
         <div v-for="comment in allComments" :key="comment._id">
           <div v-if="topic.comments.includes(comment._id)">
-          {{ comment.body }}
+           [ {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} ] {{ comment.body }}
+          <a href="" @click.prevent="editComment(comment)">Edit </a>
+          <a href="" @click.prevent="deleteComment(comment._id)">Delete</a>
           </div>
+        </div>
+
+        <div class="aboutBar"> {{ index }} | 
+          <div v-for="user in allUsers" :key="user._id">
+            <div v-if="user._id == topic.author">
+              {{ user.username }}
+            </div>
+            </div>
+           | {{ new Date(topic.createdAt).toLocaleDateString() }} | {{ new Date(topic.updatedAt).toLocaleTimeString() }}
         </div>
 
       </div>
@@ -49,6 +67,7 @@
 <script>
 import ConfirmDialog from "../components/confirmDialog";
 import EditModal from "../components/editModal";
+import UserService from '../services/user.service';
 
 export default {
   name: "Dashboard",
@@ -57,6 +76,7 @@ export default {
     return {
       allTopics: null,
       allComments: null,
+      allUsers: null,
 
       //Topic to add
       topic: {
@@ -180,6 +200,13 @@ export default {
       });
     },
 
+    getAllUsers() {
+      console.log("Getting all users");
+      UserService.getAllUsers().then(res => {
+        this.allUsers = res.data.users;
+      })
+    },
+
     //Modal Logic
     showModal() {
       this.isModalVisible = true;
@@ -192,6 +219,7 @@ export default {
   mounted() {
     this.getAllTopics();
     this.getAllComments();
+    this.getAllUsers();
   },
 };
 </script>
@@ -201,6 +229,10 @@ export default {
   background-color: white;
   min-height: 100vh;
   height: 100%;
+}
+
+.title {
+  text-align: center;
 }
 
 .topic {
@@ -214,5 +246,18 @@ export default {
 
 .commentInput input[type="submit"] {
   width: 10%;
+}
+
+.topComments {
+  border-top: 1px solid black;
+  padding: 10px;
+}
+
+.aboutBar {
+  padding: 5px;
+}
+
+.aboutBar div {
+  display: inline-block;
 }
 </style>

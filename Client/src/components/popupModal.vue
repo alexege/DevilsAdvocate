@@ -51,10 +51,10 @@ export default {
 }
 
 .window {
-    /* background-color: #1DB954; */
+    background-color: black;
+    color: white;
     border-radius: 5px;
-    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
-    color: black;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.9);
     max-width: 480px;
     margin-left: auto;
     margin-right: auto;

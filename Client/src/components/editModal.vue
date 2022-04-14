@@ -72,7 +72,7 @@ export default {
   /* background-color: rgba(255, 255, 255, 0.75); */
   color: black;
   font-weight: 500;
-  background-color: #1DB954;
+  background-color: rgba(255, 255, 255, 0.8);
   text-align: center;
 }
 </style>

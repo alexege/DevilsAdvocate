@@ -1,10 +1,12 @@
 <template>
-    <popup-modal ref="popup">
-        <h2 style="margin-top: 0">{{ title }}</h2>
-        <p>{{ message }}</p>
-        <div class="btns">
-            <button class="cancel-btn" @click="_cancel">{{ cancelButton }}</button>
-            <span class="ok-btn" @click="_confirm">{{ okButton }}</span>
+    <popup-modal ref="popup" >
+        <div class="background">
+            <h2>{{ title }}</h2>
+            <p>{{ message }}</p>
+            <div class="btns">
+                <button class="cancel-btn" @click="_cancel">{{ cancelButton }}</button>
+                <span class="ok-btn" @click="_confirm">{{ okButton }}</span>
+            </div>
         </div>
     </popup-modal>
 </template>
@@ -60,6 +62,11 @@ export default {
 }
 </script>
 <style scoped>
+
+ /* {
+    background-color: rgba(255, 255, 255, 0.5);
+} */
+
 .btns {
     display: flex;
     flex-direction: row;
@@ -78,16 +85,28 @@ export default {
     cursor: pointer;
 }
 
+.ok-btn:hover {
+    background-color: #ff0000;
+    color: black;
+    border: 1px solid black;
+}
+
 .cancel-btn {
     padding: 0.5em 1em;
+    /* background-color: rgba(0, 0, 0, 0); */
     background-color: black;
     color: #1DB954;
-    /* border: 2px solid #0ec5a4; */
-    border: none;
+    border: 2px solid #1DB954;
     border-radius: 5px;
     font-weight: bold;
     font-size: 16px;
     text-transform: uppercase;
     cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background-color: #1DB954;
+    color: black;
+    border: 1px solid black;
 }
 </style>

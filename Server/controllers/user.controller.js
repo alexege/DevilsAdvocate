@@ -24,5 +24,11 @@ exports.moderatorBoard = (req, res) => {
 };
 
 exports.allUsers = (req, res) => {
-  res.status(200).send("All Users");
+  User.find({}, (err, users) => {
+    if (err) {
+        res.status(500).send({ message: err });
+        return;
+    }
+    res.status(200).send({ users })
+}).sort([['createdAt', 'ascending']])
 }

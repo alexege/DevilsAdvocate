@@ -1,6 +1,11 @@
 import api from './api';
 
 class UserService {
+
+  getAllUsers() {
+    return api.get('/users/all');
+  }
+
   getPublicContent() {
     return api.get('/test/all');
   }
