@@ -11,18 +11,19 @@
 
     <header class="jumbotron">
       <div v-for="(topic, index) in allTopics" :key="topic._id" class="topic">
-        <h5 class="title">{{ topic.name }}</h5>
         <div>
-          {{ topic.description }}
+          <h5 class="title">{{ topic.name }}</h5>
+          <div class="topic-body">
+            {{ topic.description }}
+            <a href="" @click.prevent="editTopic(topic)"><font-awesome-icon icon="edit" class="action-icon" /></a>
+            <a href="" @click.prevent="deleteTopic(topic._id)"><font-awesome-icon icon="trash" class="action-icon" /></a>
+          </div>
         </div>
-        <a href="" @click.prevent="editTopic(topic)">Edit </a>
-        <a href="" @click.prevent="deleteTopic(topic._id)">Delete</a>
-        <br />
 
       <div class="topComments">
         <div style="color: #00aeff">Top comment agreeing</div>
         <div style="color: red">Top comment disagreeing</div>
-        <div style="color: orange">Top comment with other perspective</div>
+        <div style="color: orangered">Top comment with other perspective</div>
       </div>
 
         <!-- Add Comment -->
@@ -33,9 +34,9 @@
 
         <div v-for="comment in allComments" :key="comment._id">
           <div v-if="topic.comments.includes(comment._id)">
-           [ {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} ] {{ comment.body }}
-          <a href="" @click.prevent="editComment(comment)">Edit </a>
-          <a href="" @click.prevent="deleteComment(comment._id)">Delete</a>
+          [ <font-awesome-icon icon="arrow-up" /> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" /> ] <span class="comment-body-neutral">{{ comment.body }}</span>
+          <a href="" @click.prevent="editComment(comment)"><font-awesome-icon icon="edit" class="action-icon" /></a>
+          <a href="" @click.prevent="deleteComment(comment._id)"><font-awesome-icon icon="trash" class="action-icon"/></a>
           </div>
         </div>
 
@@ -221,10 +222,32 @@ export default {
     this.getAllComments();
     this.getAllUsers();
   },
+
 };
 </script>
 
 <style scoped>
+.action-icon {
+  margin: 0 4px;
+  color: black;
+}
+
+.action-icon:hover {
+  color: cyan;
+}
+
+.comment-body-negative {
+  text-decoration: underline 1px solid red;
+}
+
+.comment-body-positive {
+  text-decoration: underline 1px solid #00aeff;
+}
+
+.comment-body-neutral {
+  text-decoration: underline 1px solid orange;
+}
+
 .jumbotron {
   background-color: white;
   min-height: 100vh;
@@ -237,6 +260,18 @@ export default {
 
 .topic {
   border: 1px solid black;
+  padding: 10px;
+  margin: 20px 0;
+  transition: all .2s ease-in-out;
+}
+
+.topic:hover {
+  box-shadow: 2px 2px 4px black;
+  transform: scale(1.025);
+}
+
+.topic-body {
+  display: inline-block;
   padding: 10px;
 }
 
@@ -260,4 +295,5 @@ export default {
 .aboutBar div {
   display: inline-block;
 }
+
 </style>

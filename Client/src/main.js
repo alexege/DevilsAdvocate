@@ -13,12 +13,17 @@ import {
   faUser,
   faUserPlus,
   faSignInAlt,
-  faSignOutAlt
+  faSignOutAlt,
+  faArrowUp,
+  faArrowDown,
+  faEdit,
+  faTrash
+  
 } from '@fortawesome/free-solid-svg-icons';
 
 import setupInterceptors from './services/setupInterceptors';
 
-library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faArrowUp, faArrowDown, faEdit, faTrash);
 
 Vue.config.productionTip = false;
 
