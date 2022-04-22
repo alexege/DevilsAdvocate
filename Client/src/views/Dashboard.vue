@@ -9,6 +9,13 @@
       @update-topic="updateTopic"
     />
 
+    <span style="color:cyan">============== all Votes ==============</span>
+    <pre style="color: white;">{{ allVotes }}</pre>
+    <span style="color:cyan">============== all Comments ==============</span>
+    <pre style="color: white;">{{ allComments }}</pre>
+    <span style="color:cyan">============== all Users ==============</span>
+    <pre style="color: white;">{{ allUsers }}</pre>
+
     <header class="jumbotron">
       <div v-for="(topic, index) in allTopics" :key="topic._id" class="topic">
         <div>
@@ -32,11 +39,27 @@
           <input type="submit" value="Add" @click="addComment(topic._id)" />
         </div>
 
-        <div v-for="comment in allComments" :key="comment._id">
+        <div v-for="comment in allComments" :key="comment._id" class="comment" style="position: relative;">
           <div v-if="topic.comments.includes(comment._id)">
-          [ <font-awesome-icon icon="arrow-up" /> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" /> ] <span class="comment-body-neutral">{{ comment.body }}</span>
-          <a href="" @click.prevent="editComment(comment)"><font-awesome-icon icon="edit" class="action-icon" /></a>
-          <a href="" @click.prevent="deleteComment(comment._id)"><font-awesome-icon icon="trash" class="action-icon"/></a>
+           {{ comment.votes.length || 0 }} [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ] 
+          
+          <!-- Edit Comment Body -->
+          <div v-if="comment._id == commentToEdit._id && isEditingComment" class="comment-edit">
+            <input type="text" v-model="comment.body" class="comment-edit-input" :size="comment.body.length">
+            <!-- <textarea type="text" v-model="comment.body" class="comment-edit-input" :size="comment.body.length"></textarea> -->
+            <button @click.prevent="updateComment(comment)" >Save</button>
+            <button @click.prevent="cancel" >Cancel</button>
+          </div>
+
+          <div v-else class="comment-edit" >
+           
+           <span class="comment-body" >{{ comment.body }}</span>
+           <div style="display: inline-block; position: absolute; right: 0;">
+            <a href="" @click.prevent="updateComment(comment)" class="edit-btn" v-if="isEditingComment"><font-awesome-icon icon="check" /></a>
+            <a href="" @click.prevent="editComment(comment)"><font-awesome-icon icon="edit" class="action-icon" /></a>
+            <a href="" @click.prevent="deleteComment(comment._id)"><font-awesome-icon icon="trash" class="action-icon"/></a>
+           </div>
+          </div>
           </div>
         </div>
 
@@ -69,6 +92,7 @@
 import ConfirmDialog from "../components/confirmDialog";
 import EditModal from "../components/editModal";
 import UserService from '../services/user.service';
+import CommentService from '../services/comment.service';
 
 export default {
   name: "Dashboard",
@@ -78,6 +102,7 @@ export default {
       allTopics: null,
       allComments: null,
       allUsers: null,
+      allVotes: null,
 
       //Topic to add
       topic: {
@@ -98,6 +123,7 @@ export default {
         body: null
       },
       isModalVisible: false,
+      isEditingComment: false,
     };
   },
 
@@ -177,6 +203,10 @@ export default {
       });
     },
 
+    cancel() {
+      this.isEditingComment = false;
+    },
+
     deleteComment(comment) {
 
         this.$refs.confirmDialog.show({
@@ -208,6 +238,47 @@ export default {
       })
     },
 
+    getAllVotes() {
+      CommentService.allVotes().then(res => {
+        this.allVotes = res.data.votes;
+      })
+    },
+
+    /* ========================Votes================================ */
+    likeComment(comment) {
+      console.log("My Comment:", comment);
+      const currentUser = JSON.parse(localStorage.getItem('user'));
+      console.log("currentUser: ", currentUser);
+
+      if(currentUser) {
+        return this.$store.dispatch('comment/likeComment', {
+        "comment": comment,
+        "userId": currentUser.id,
+        "value": 1
+      }).then(() => {
+        console.log("Get all comments");
+          this.getAllComments();
+          this.getAllVotes();
+        })
+      }
+    },
+
+    dislikeComment(comment) {
+      const currentUser = JSON.parse(localStorage.getItem('user'));
+      console.log("currentUser: ", currentUser);
+
+      if(currentUser) {
+        return this.$store.dispatch('comment/dislikeComment', {
+          "comment": comment,
+          "userId": currentUser.id,
+          "value": 1
+        }).then(() => {
+          this.getAllComments();
+          this.getAllVotes();
+        })
+      }
+    },
+
     //Modal Logic
     showModal() {
       this.isModalVisible = true;
@@ -221,6 +292,7 @@ export default {
     this.getAllTopics();
     this.getAllComments();
     this.getAllUsers();
+    this.getAllVotes();
   },
 
 };
@@ -230,10 +302,20 @@ export default {
 .action-icon {
   margin: 0 4px;
   color: black;
+  /* float: right; */
 }
 
 .action-icon:hover {
   color: cyan;
+}
+
+.comment {
+  margin: 5px auto;
+  /* width: 95%; */
+}
+
+.comment:hover {
+  /* border-bottom: 1px solid black; */
 }
 
 .comment-body-negative {
@@ -248,8 +330,31 @@ export default {
   text-decoration: underline 1px solid orange;
 }
 
+.comment-edit {
+  text-align: center;
+  display: inline-block;
+}
+
+.comment-edit button {
+  color: black;
+  background-color: transparent;
+  border: 2px solid #00aeff;
+  margin: .25em;
+}
+
+.comment-edit button:hover {
+  color: black;
+  background-color: #00aeff;
+  border: 2px solid black;
+  margin: .25em;
+}
+
+.comment-edit-input {
+
+}
+
 .jumbotron {
-  background-color: white;
+  background-color: #00ff2a;
   min-height: 100vh;
   height: 100%;
 }
@@ -294,6 +399,20 @@ export default {
 
 .aboutBar div {
   display: inline-block;
+}
+
+ /* ========================Icons================================ */
+
+.arrow-up {
+  color: #00aeff;
+}
+
+.arrow-up:hover, .arrow-down:hover {
+  cursor: pointer;
+}
+
+.arrow-down {
+  color: red;
 }
 
 </style>

@@ -45,14 +45,38 @@ export const comment = {
 
         allComments({ commit }, comment) {
             return CommentService.allComments()
-            .then(topics => {
+            .then(comments => {
                 commit('allCommentsSuccess', comment);
-                return Promise.resolve(topics);
+                return Promise.resolve(comments);
             },
             error => {
                 commit('allCommentsFailure', comment);
                 return Promise.reject(error);
             });
+        },
+
+        likeComment({ commit }, comment) {
+            return CommentService.likeComment(comment)
+            .then(comments => {
+                commit('likeCommentSuccess', comment);
+                return Promise.resolve(comments);
+            },
+            error => {
+                commit('likeCommentFailure', comment);
+                return Promise.reject(error);
+            })
+        },
+
+        dislikeComment({ commit }, comment) {
+            return CommentService.dislikeComment(comment)
+            .then(comments => {
+                commit('dislikeCommentSuccess', comment);
+                return Promise.resolve(comments);
+            },
+            error => {
+                commit('dislikeCommentFailure', comment);
+                return Promise.reject(error);
+            })
         }
     },
 
@@ -105,6 +129,18 @@ export const comment = {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
         },
+        likeCommentSuccess() {
+
+        },
+        likeCommentFailure() {
+
+        },
+        dislikeCommentSuccess() {
+
+        },
+        dislikeCommentFailure() {
+
+        }
     }
 }
 

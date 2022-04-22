@@ -23,6 +23,7 @@ const User = require("./models/user.model");
 const Message = require("./models/message.model");
 const Comment = require("./models/comment.model");
 const Topic = require("./models/topic.model");
+const Votes = require("./models/vote.model");
 // const Comment = require("./models/comment.model");
 const ROLE = db.role;
 
@@ -50,6 +51,7 @@ require('./routes/user.routes')(app);
 require('./routes/message.routes')(app);
 require('./routes/comment.routes')(app);
 require('./routes/topic.routes')(app);
+// require('./routes/vote.routes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

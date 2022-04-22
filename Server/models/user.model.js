@@ -9,13 +9,19 @@ const User = mongoose.model(
         roles: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "Role"
+                ref: 'Role'
             }
         ],
-        img: { 
+        img: {
             data: Buffer, 
             contentType: String 
-        }
+        },
+        votes: [
+            {
+                type: mongoose.Schema.Types.ObjectId, 
+                ref: 'Vote'
+            },
+        ],
     },
     { timestamps: true})
 );

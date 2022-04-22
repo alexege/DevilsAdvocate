@@ -54,6 +54,42 @@ class CommentService {
         return err;
       });
   }
+  
+  likeComment(comment) {
+    console.log("comment:", comment.comment._id);
+    return axios.post(API_URL + `likeComment/${comment.comment._id}`, {
+      comment: comment,
+    })
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  }
+  
+  dislikeComment(comment) {
+    return axios.post(API_URL + `dislikeComment/${comment._id}`, {
+      comment: comment,
+    })
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  }
+
+  allVotes() {
+    return axios
+      .get(API_URL + "allVotes")
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        return err;
+      });
+  }
 }
 
 export default new CommentService();

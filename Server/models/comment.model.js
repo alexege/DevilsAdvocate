@@ -11,7 +11,13 @@ const Comment = mongoose.model(
         message: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Message'
-        }
+        },
+        votes: [
+            {
+                type: mongoose.Schema.Types.ObjectId, 
+                ref: 'Vote'
+            },
+        ],
     },
     { timestamps: true})
 );

@@ -5,7 +5,6 @@ const Comment = db.topic;
 
 exports.allTopics = (req, res) => {
   Topic.find({}, (err, topics) => {
-    console.log("testing:" + topics);
     if (err) {
       res.status(500).send({ message: err });
       return;
