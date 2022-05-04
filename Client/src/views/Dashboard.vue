@@ -9,12 +9,19 @@
       @update-topic="updateTopic"
     />
 
-    <span style="color:cyan">============== all Votes ==============</span>
+    <pre>_______________ALL VOTES_____________________</pre>
     <pre style="color: white;">{{ allVotes }}</pre>
-    <span style="color:cyan">============== all Comments ==============</span>
-    <pre style="color: white;">{{ allComments }}</pre>
-    <span style="color:cyan">============== all Users ==============</span>
+    <pre>_______________ALL USERS_____________________</pre>
     <pre style="color: white;">{{ allUsers }}</pre>
+    <pre>_______________ALL COMMENTS_____________________</pre>
+    <pre style="color:white">{{allComments}}</pre>
+    <pre>____________________________________</pre>
+    <!-- <span style="color:cyan">============== all Votes ==============</span>
+    <pre style="color: white;" v-for="vote in allVotes" :key="vote._id">Comment: {{ vote.comment }} User: {{ vote.user }}</pre>
+    <span style="color:cyan">============== all Comments ==============</span>
+    <pre style="color: white;" v-for="comment in allComments" :key="comment._id">Votes: {{ comment.votes }}</pre>
+    <span style="color:cyan">============== all Users ==============</span>
+    <pre style="color: white;" v-for="user in allUsers" :key="user._id">id: {{ user._id }} votes: {{ user.votes }}</pre> -->
 
     <header class="jumbotron">
       <div v-for="(topic, index) in allTopics" :key="topic._id" class="topic">
@@ -41,7 +48,7 @@
 
         <div v-for="comment in allComments" :key="comment._id" class="comment" style="position: relative;">
           <div v-if="topic.comments.includes(comment._id)">
-           {{ comment.votes.length || 0 }} [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ] 
+            <span v-for="vote in comment.votes" :key="vote._id">{{ vote.value }}</span> [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ] 
           
           <!-- Edit Comment Body -->
           <div v-if="comment._id == commentToEdit._id && isEditingComment" class="comment-edit">
@@ -100,7 +107,7 @@ export default {
   data() {
     return {
       allTopics: null,
-      allComments: null,
+      allComments: null,    //Array of comment objects
       allUsers: null,
       allVotes: null,
 
@@ -246,32 +253,27 @@ export default {
 
     /* ========================Votes================================ */
     likeComment(comment) {
-      console.log("My Comment:", comment);
+      
       const currentUser = JSON.parse(localStorage.getItem('user'));
-      console.log("currentUser: ", currentUser);
 
       if(currentUser) {
         return this.$store.dispatch('comment/likeComment', {
         "comment": comment,
-        "userId": currentUser.id,
-        "value": 1
+        "currentUserId": currentUser.id
       }).then(() => {
-        console.log("Get all comments");
+        this.getAllVotes();
           this.getAllComments();
-          this.getAllVotes();
         })
       }
     },
 
     dislikeComment(comment) {
       const currentUser = JSON.parse(localStorage.getItem('user'));
-      console.log("currentUser: ", currentUser);
 
       if(currentUser) {
         return this.$store.dispatch('comment/dislikeComment', {
           "comment": comment,
-          "userId": currentUser.id,
-          "value": 1
+          "currentUserId": currentUser.id
         }).then(() => {
           this.getAllComments();
           this.getAllVotes();

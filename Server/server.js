@@ -61,43 +61,34 @@ app.listen(PORT, () => {
 
 //Seeding the database with Roles and test users
 function initial() {
-  User.estimatedDocumentCount((err, count) => {
+  // User.estimatedDocumentCount((err, count) => {
+  //   if (!err && count === 0) {
+  //     new User({
+  //       username: 'alexege',
+  //       email: 'alexege@gmail.com',
+  //       password: 'asdfasdf',
+  //     }).save(err => {
+  //       if(err) {
+  //         console.log("error", err);
+  //       }
+  //       console.log("Added 'Alexege' to users collection");
+  //     });
+  //   }
+  // })
+
+  Topic.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
-      new User({
-        name: 'User1',
-        password: 'Password1',
-        email: 'user1@gmail.com'
+      new Topic({
+        name: "First Topic",
+        description: "This is the description of my first topic."
       }).save(err => {
         if(err) {
           console.log("error", err);
         }
-        console.log("Added 'User1' to users collection");
-      });
-      
-      new User({
-        name: 'User2',
-        password: 'Password2',
-        email: 'user2@gmail.com'
-      }).save(err => {
-        if(err) {
-          console.log("error", err);
-        }
-        console.log("Added 'User2' to users collection");
-      });
-      
-      new User({
-        name: 'User3',
-        password: 'Password3',
-        email: 'user3@gmail.com'
-      }).save(err => {
-        if(err) {
-          console.log("error", err);
-        }
-        console.log("Added 'User3' to users collection");
+        console.log("Added Topic 1 to topic collection");
       });
     }
   })
-
 
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
