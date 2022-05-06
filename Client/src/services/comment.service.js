@@ -56,7 +56,6 @@ class CommentService {
   }
   
   likeComment(comment) {
-    console.log("comment:", comment._id);
     return axios.post(API_URL + `likeComment/${comment._id}`, comment)
     .then((res) => {
       return res;
@@ -67,7 +66,6 @@ class CommentService {
   }
   
   dislikeComment(comment) {
-    console.log("[service]: comment : ", comment._id);
     return axios.post(API_URL + `dislikeComment/${comment._id}`, comment)
     .then((res) => {
       return res;

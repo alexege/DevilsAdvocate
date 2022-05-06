@@ -9,13 +9,15 @@
       @update-topic="updateTopic"
     />
 
-    <pre>_______________ALL VOTES_____________________</pre>
+    <!-- <pre>_______________ALL VOTES_____________________</pre>
     <pre style="color: white;">{{ allVotes }}</pre>
     <pre>_______________ALL USERS_____________________</pre>
     <pre style="color: white;">{{ allUsers }}</pre>
     <pre>_______________ALL COMMENTS_____________________</pre>
-    <pre style="color:white">{{allComments}}</pre>
-    <pre>____________________________________</pre>
+    <pre style="color:white" v-for="comment in allComments" :key="comment._id">{{comment.votes}}</pre>
+    <pre>____________________________________</pre> -->
+
+    
     <!-- <span style="color:cyan">============== all Votes ==============</span>
     <pre style="color: white;" v-for="vote in allVotes" :key="vote._id">Comment: {{ vote.comment }} User: {{ vote.user }}</pre>
     <span style="color:cyan">============== all Comments ==============</span>
@@ -46,9 +48,10 @@
           <input type="submit" value="Add" @click="addComment(topic._id)" />
         </div>
 
+
         <div v-for="comment in allComments" :key="comment._id" class="comment" style="position: relative;">
           <div v-if="topic.comments.includes(comment._id)">
-            <span v-for="vote in comment.votes" :key="vote._id">{{ vote.value }}</span> [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ] 
+            <span v-for="vote in comment.votes" :key="vote._id">{{ vote.value || 0}}</span> [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ] 
           
           <!-- Edit Comment Body -->
           <div v-if="comment._id == commentToEdit._id && isEditingComment" class="comment-edit">
@@ -263,6 +266,7 @@ export default {
       }).then(() => {
         this.getAllVotes();
           this.getAllComments();
+          this.getAllUsers();
         })
       }
     },
@@ -277,6 +281,7 @@ export default {
         }).then(() => {
           this.getAllComments();
           this.getAllVotes();
+          this.getAllUsers();
         })
       }
     },
