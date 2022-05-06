@@ -70,59 +70,29 @@ exports.allComments = (req, res) => {
     .sort([["createdAt", "ascending"]]);
 };
 
-// exports.likeComment = async (req, res) => {
-//     const existingVote = await Vote.findOne({
-//       comment: mongoose.Types.ObjectId(req.body.comment._id),
-//       user: mongoose.Types.ObjectId(req.body.currentUserId)
-//     })
-//     console.log("existingVote: ", existingVote);
-
-//   if(existingVote) {
-//     const deletedVote = await Vote.findOneAndDelete({ _id : existingVote._id });
-//     console.log("deletedVote:", deletedVote);
-//     const user = await User.findOne({ _id: deletedVote.user.toString() });
-//     let indexOfVote = user.votes.indexOf(deletedVote._id);
-//     console.log("IndexOfVote:", indexOfVote);
-//     if(indexOfVote > -1) user.votes.splice(indexOfVote, 1);
-//     user.save();
-//     // console.log("user:", user);
-//     const comment = await Comment.findOne({ author: deletedVote.user, _id: req.body.comment._id });
-//     let indexOfVote2 = comment.votes.indexOf(deletedVote._id);
-//     console.log("IndexOfVote:", indexOfVote);
-//     if(indexOfVote2 > -1) comment.votes.splice(indexOfVote2, 1);
-//     comment.save();
-//     // console.log("comment:", comment);
-//   } else {
-//     console.log("Creating a new vote");
-//     const newVote = await new Vote({
-//       comment: req.body.comment._id,
-//       user: req.body.currentUserId,
-//       value: 1
-//     });
-
-//     newVote.save();
-//   }
-// }
-
 exports.likeComment = async (req, res) => {
-  console.log("------------------------------------");
-  Vote.findOneAndDelete({ comment: mongoose.Types.ObjectId(req.body.comment._id )}, { user: mongoose.Types.ObjectId(req.body.currentUserId )},
+  // console.log("------------------------------------");
+  Vote.findOneAndDelete({
+    $and: [
+    { comment: mongoose.Types.ObjectId(req.body.comment._id) },
+    { user: mongoose.Types.ObjectId(req.body.currentUserId) },
+  ]},
   (err, existingVote) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
     if(existingVote) {
-      console.log("existingVote._id:", existingVote._id);
+      // console.log("existingVote._id:", existingVote._id);
 
       User.findOne(
         { _id: req.body.currentUserId },
       ).then(user => {
-        console.log("user", user);
+        // console.log("user", user);
         let voteIndex = user.votes.indexOf(existingVote._id);
-        console.log(voteIndex);
+        // console.log(voteIndex);
         if(voteIndex > -1) user.votes.splice(voteIndex, 1);
-        console.log("Deleting vote from user: ", user);
+        // console.log("Deleting vote from user: ", user);
         user.save();
         return;
       }).catch(err => {
@@ -133,9 +103,9 @@ exports.likeComment = async (req, res) => {
         { _id: req.body.comment._id },
       ).then(comment => {
         let voteIndex = comment.votes.indexOf(existingVote._id);
-        console.log(voteIndex);
+        // console.log(voteIndex);
         if(voteIndex > -1) comment.votes.splice(voteIndex, 1);
-        console.log("Deleting vote from comment: ", comment);
+        // console.log("Deleting vote from comment: ", comment);
         comment.save();
         return;
       }).catch(err => {
@@ -152,7 +122,7 @@ exports.likeComment = async (req, res) => {
         user: req.body.currentUserId,
         value: 1,
       });
-      console.log("No existingVote found.");
+      // console.log("No existingVote found.");
       
         if(existingVote){
           if(existingVote.value == 0){
@@ -167,9 +137,6 @@ exports.likeComment = async (req, res) => {
             res.status(500).send({ message: err });
             return;
           }
-        console.log("newVote:", vote);
-        console.log("New vote saved");
-        console.log("req.body.currentUserId:", req.body.currentUserId);
 
         User.findOne(
           { _id: req.body.currentUserId },
@@ -194,15 +161,19 @@ exports.likeComment = async (req, res) => {
 )}
 
 exports.dislikeComment = async (req, res) => {
-  console.log("------------------------------------");
-  Vote.findOneAndDelete({ comment: mongoose.Types.ObjectId(req.body.comment._id )}, { user: mongoose.Types.ObjectId(req.body.currentUserId )},
+  // console.log("------------------------------------");
+  Vote.findOneAndDelete({
+    $and: [
+    { comment: mongoose.Types.ObjectId(req.body.comment._id)   },
+    { user:    mongoose.Types.ObjectId(req.body.currentUserId) },
+  ]},
   (err, existingVote) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
     if(existingVote) {
-      console.log("existingVote._id:", existingVote._id);
+      // console.log("existingVote._id:", existingVote._id);
 
       User.findOne(
         { _id: req.body.currentUserId },
@@ -211,7 +182,7 @@ exports.dislikeComment = async (req, res) => {
         let voteIndex = user.votes.indexOf(existingVote._id);
         console.log(voteIndex);
         if(voteIndex > -1) user.votes.splice(voteIndex, 1);
-        console.log("Deleting vote from user: ", user);
+        // console.log("Deleting vote from user: ", user);
         user.save();
         return;
       }).catch(err => {
@@ -224,7 +195,7 @@ exports.dislikeComment = async (req, res) => {
         let voteIndex = comment.votes.indexOf(existingVote._id);
         console.log(voteIndex);
         if(voteIndex > -1) comment.votes.splice(voteIndex, 1);
-        console.log("Deleting vote from comment: ", comment);
+        // console.log("Deleting vote from comment: ", comment);
         comment.save();
         return;
       }).catch(err => {
@@ -241,24 +212,24 @@ exports.dislikeComment = async (req, res) => {
         user: req.body.currentUserId,
         value: -1,
       });
-      console.log("No existingVote found.");
+      // console.log("No existingVote found.");
       
-        if(existingVote){
-          if(existingVote.value == 0){
-            newVote.value = -1;
-          } else {
-            newVote.value = 0;
-          }
-        }
+        // if(existingVote){
+        //   if(existingVote.value == 0){
+        //     newVote.value = -1;
+        //   } else {
+        //     newVote.value = 0;
+        //   }
+        // }
 
         newVote.save((err, vote) => {
           if (err) {
             res.status(500).send({ message: err });
             return;
           }
-        console.log("newVote:", vote);
-        console.log("New vote saved");
-        console.log("req.body.currentUserId:", req.body.currentUserId);
+        // console.log("newVote:", vote);
+        // console.log("New vote saved");
+        // console.log("req.body.currentUserId:", req.body.currentUserId);
 
         User.findOne(
           { _id: req.body.currentUserId },
@@ -282,165 +253,35 @@ exports.dislikeComment = async (req, res) => {
   }
 )}
 
-// exports.likeComment = (req, res) => {
-//   console.log("------[Liking Comment]------");
-//   console.log(
-//     `UserId:\t\t${mongoose.Types.ObjectId(
-//       req.body.currentUserId
-//     )} \nCommentId: \t${mongoose.Types.ObjectId(req.body.comment._id)}\n_`
-//   );
-//   //Check to see if the comment already has a vote from the current user
-//   Vote.findOne(
-//     {
-//       $and: [
-//         { comment: mongoose.Types.ObjectId(req.body.comment._id) },
-//         { user: mongoose.Types.ObjectId(req.body.currentUserId) },
-//       ],
-//     },
-//     (err, existingVote) => {
-//       if (err) {
-//         res.status(500).send({ message: err });
-//         return;
-//       }
-//       if (existingVote) {
-        
-//         //Delete that one
-//         Vote.findOneAndDelete(
-//           {
-//             _id: existingVote._id,
-//           },
-//           (err, vote) => {
-//             if (err) {
-//               res.status(500).send({ message: err });
-//               return;
-//             }
-
-//               User.findOne(
-//                     {
-//                       _id: vote.user.toString(),
-//                     },
-//                     (err, user) => {
-//                       console.log("[User.findOne]: ", user);
-//                       if (err) {
-//                         res.status(500).send({ message: err });
-//                         return;
-//                       }
-//                       let indexOfVote = user.votes.indexOf(vote._id);
-//                       console.log("[user.votes]", user.votes, user.votes.length);
-//                       console.log("[user.votes.indexOf():]xxxxxxxxxxxxxxx", indexOfVote);
-//                       if (indexOfVote > -1) user.votes.splice(indexOfVote, 1);
-//                       console.log("[user.votes]", user.votes, user.votes.length);
-//                       // user.save();
-//                     }
-//                   ),
-                  
-//                   Comment.findOne(
-//                     {
-//                       author: vote.user,
-//                       _id: req.body.comment._id,
-//                     },
-//                     (err, comment) => {
-//                       if (err) {
-//                         res.status(500).send({ message: err });
-//                         return;
-//                       }
-      
-//                       console.log("votes: ", comment.votes);
-//                       let indexOfVote = comment.votes.indexOf(vote._id.toString());
-//                       console.log("A matching vote was found at index: ", indexOfVote);
-//                       if (indexOfVote > -1) comment.votes.splice(indexOfVote, 1);
-//                       console.log("votes: ", comment.votes);
-//                       // comment.save();
-//                     }
-//                   )
-//           }
-//         );
-//       }
-
-//       //Create a new Vote Object
-//       const vote = new Vote({
-//         comment: req.body.comment._id,
-//         user: req.body.currentUserId,
-//         value: 1,
-//       });
-
-//       if(existingVote){
-//         if(existingVote.value == 0){
-//           vote.value = 1;
-//         } else {
-//           vote.value = 0;
-//         }
-//       }
-
-//       vote.save((err, vote) => {
-//         if (err) {
-//           res.status(500).send({ message: err });
-//           return;
-//         }
-//         User.findOne(
-//           {
-//             _id: vote.user,
-//           },
-//           (err, user) => {
-//             console.log("user:", user);
-//             if (err) {
-//               res.status(500).send({ message: err });
-//               return;
-//             }
-//             user.votes.push(vote);
-//             user.save();
-//           }
-//         );
-//         Comment.findOne(
-//           {
-//             _id: req.body.comment._id,
-//           },
-//           (err, comment) => {
-//             console.log("comment:", comment);
-
-//             if (err) {
-//               res.status(500).send({ message: err });
-//               return;
-//             }
-//             comment.votes.push(vote);
-//             comment.save();
-//           }
-//         );
-//         res.status(200).send({ vote: vote });
-//       });
-//     }
-//   );
-// };
-
 exports.dislikeComment = (req, res) => {
-  console.log("------[Disliking Comment]------");
-  console.log(
-    `UserId:\t\t${mongoose.Types.ObjectId(
-      req.body.currentUserId
-    )} \nCommentId: \t${mongoose.Types.ObjectId(req.body.comment._id)}\n_`
-  );
+  // console.log("------[Disliking Comment]------");
+  // console.log(
+  //   `UserId:\t\t${mongoose.Types.ObjectId(
+  //     req.body.currentUserId
+  //   )} \nCommentId: \t${mongoose.Types.ObjectId(req.body.comment._id)}\n_`
+  // );
   //Check to see if the comment already has a vote from the current user
   Vote.findOne(
     {
       $and: [
-        { comment: mongoose.Types.ObjectId(req.body.comment._id) },
-        { user: mongoose.Types.ObjectId(req.body.currentUserId) },
+        { comment: mongoose.Types.ObjectId(req.body.comment._id)   },
+        { user:    mongoose.Types.ObjectId(req.body.currentUserId) },
       ],
     },
     (err, existingVote) => {
-      console.log("[Vote.findOne]: ", existingVote);
+      // console.log("[Vote.findOne]: ", existingVote);
       if (err) {
         res.status(500).send({ message: err });
         return;
       }
       if (existingVote) {
-        console.log("Existing vote found: ", existingVote);
-        console.log(
-          `CommentId: ${existingVote.comment}, UserId: ${existingVote.user}`
-        );
-        console.log(
-          `CommentId: ${req.body.comment._id}, UserId: ${req.body.currentUserId}`
-        );
+        // console.log("Existing vote found: ", existingVote);
+        // console.log(
+        //   `CommentId: ${existingVote.comment}, UserId: ${existingVote.user}`
+        // );
+        // console.log(
+        //   `CommentId: ${req.body.comment._id}, UserId: ${req.body.currentUserId}`
+        // );
 
         //Delete that one
         Vote.findOneAndDelete(
@@ -459,13 +300,13 @@ exports.dislikeComment = (req, res) => {
                 _id: req.body.comment._id,
               },
               (err, comment) => {
-                console.log("[Comment.findOne]: ", comment);
+                // console.log("[Comment.findOne]: ", comment);
                 if (err) {
                   res.status(500).send({ message: err });
                   return;
                 }
                 let indexOfVote = comment.votes.indexOf(vote._id.toString());
-                console.log("[comment.votes.indexOf()]: ", indexOfVote);
+                // console.log("[comment.votes.indexOf()]: ", indexOfVote);
                 if (indexOfVote > -1) comment.votes.splice(indexOfVote, 1);
                 comment.save();
 
@@ -497,16 +338,16 @@ exports.dislikeComment = (req, res) => {
         value: -1,
       });
 
-      if(existingVote){
-        if(existingVote.value == 0){
-          vote.value = -1;
-        } else {
-          vote.value = 0;
-        }
-      }
+      // if(existingVote){
+      //   if(existingVote.value == 0){
+      //     vote.value = -1;
+      //   } else {
+      //     vote.value = 0;
+      //   }
+      // }
 
       vote.save((err, vote) => {
-        console.log("[new Vote created]: ", vote);
+        // console.log("[new Vote created]: ", vote);
         if (err) {
           res.status(500).send({ message: err });
           return;
@@ -523,8 +364,8 @@ exports.dislikeComment = (req, res) => {
             }
             user.votes.push(vote);
             user.save();
-            console.log("Added vote to user: ", user._id);
-            console.log("User with comment: ", user);
+            // console.log("Added vote to user: ", user._id);
+            // console.log("User with comment: ", user);
           }
         );
         Comment.findOne(
@@ -539,10 +380,10 @@ exports.dislikeComment = (req, res) => {
             }
             comment.votes.push(vote);
             comment.save();
-            console.log("Added vote to comment: ", comment);
+            // console.log("Added vote to comment: ", comment);
           }
         );
-        console.log("Done");
+        // console.log("Done");
         res.status(200).send({ vote: vote });
       });
     }

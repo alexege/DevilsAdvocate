@@ -9,6 +9,8 @@
       @update-topic="updateTopic"
     />
 
+    <span style="color: white" v-if="currentUser">{{ currentUser.id }}</span>
+
     <!-- <pre>_______________ALL VOTES_____________________</pre>
     <pre style="color: white;">{{ allVotes }}</pre>
     <pre>_______________ALL USERS_____________________</pre>
@@ -17,7 +19,7 @@
     <pre style="color:white" v-for="comment in allComments" :key="comment._id">{{comment.votes}}</pre>
     <pre>____________________________________</pre> -->
 
-    
+
     <!-- <span style="color:cyan">============== all Votes ==============</span>
     <pre style="color: white;" v-for="vote in allVotes" :key="vote._id">Comment: {{ vote.comment }} User: {{ vote.user }}</pre>
     <span style="color:cyan">============== all Comments ==============</span>
@@ -51,7 +53,10 @@
 
         <div v-for="comment in allComments" :key="comment._id" class="comment" style="position: relative;">
           <div v-if="topic.comments.includes(comment._id)">
-            <span v-for="vote in comment.votes" :key="vote._id">{{ vote.value || 0}}</span> [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ] 
+            <!-- <span v-for="vote in comment.votes" :key="vote._id">{{ vote.value || 0}}</span> -->
+            <span>{{ voteTotal(comment) }}</span>
+            <!-- <pre>{{ comment.votes }}</pre> -->
+            [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ]
           
           <!-- Edit Comment Body -->
           <div v-if="comment._id == commentToEdit._id && isEditingComment" class="comment-edit">
@@ -113,6 +118,8 @@ export default {
       allComments: null,    //Array of comment objects
       allUsers: null,
       allVotes: null,
+
+      currentUser: null,
 
       //Topic to add
       topic: {
@@ -254,10 +261,19 @@ export default {
       })
     },
 
+    voteTotal(comment) {
+      let totalVotes = 0;
+      comment.votes.forEach(element => {
+        totalVotes += element.value;
+      });
+      return totalVotes;
+    },
+
     /* ========================Votes================================ */
     likeComment(comment) {
       
       const currentUser = JSON.parse(localStorage.getItem('user'));
+      this.currentUser = currentUser;
 
       if(currentUser) {
         return this.$store.dispatch('comment/likeComment', {
