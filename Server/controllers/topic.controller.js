@@ -10,7 +10,9 @@ exports.allTopics = (req, res) => {
       return;
     }
     res.status(200).send({ topics });
-  }).sort([["createdAt", "descending"]]);
+  })
+  .populate("comments")
+  .sort([["createdAt", "descending"]]);
 };
 
 exports.addTopic = (req, res) => {

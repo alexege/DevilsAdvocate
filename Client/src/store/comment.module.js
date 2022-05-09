@@ -77,7 +77,55 @@ export const comment = {
                 commit('dislikeCommentFailure', comment);
                 return Promise.reject(error);
             })
-        }
+        },
+        
+        getTopAgree({ commit }, comment) {
+            return CommentService.getTopAgree(comment)
+            .then(comments => {
+                commit('getTopAgreeSuccess', comment);
+                return Promise.resolve(comments);
+            },
+            error => {
+                commit('getTopAgreeFailure', comment);
+                return Promise.reject(error);
+            })
+        },
+        
+        getTopDisagree({ commit }, comment) {
+            return CommentService.getTopDisagree(comment)
+            .then(comments => {
+                commit('getTopDisagreeSuccess', comment);
+                return Promise.resolve(comments);
+            },
+            error => {
+                commit('getTopDisagreeFailure', comment);
+                return Promise.reject(error);
+            })
+        },
+        
+        getTopAlt({ commit }, comment) {
+            return CommentService.getTopAlt(comment)
+            .then(comments => {
+                commit('getTopAltSuccess', comment);
+                return Promise.resolve(comments);
+            },
+            error => {
+                commit('getTopAltFailure', comment);
+                return Promise.reject(error);
+            })
+        },
+        
+        // getTopAgree({ commit }, comment) {
+        //     return CommentService.dislikeComment(comment)
+        //     .then(comments => {
+        //         commit('getTopAgreeSuccess', comment);
+        //         return Promise.resolve(comments);
+        //     },
+        //     error => {
+        //         commit('getTopAgreeFailure', comment);
+        //         return Promise.reject(error);
+        //     })
+        // },
     },
 
     mutations: {
@@ -139,6 +187,24 @@ export const comment = {
 
         },
         dislikeCommentFailure() {
+
+        },
+        getTopAgreeSuccess() {
+            
+        },
+        getTopAgreeFailure() {
+
+        },
+        getTopDisagreeSuccess() {
+            
+        },
+        getTopDisagreeFailure() {
+
+        },
+        getTopAltSuccess() {
+            
+        },
+        getTopAltFailure() {
 
         }
     }

@@ -9,8 +9,6 @@
       @update-topic="updateTopic"
     />
 
-    <span style="color: white" v-if="currentUser">{{ currentUser.id }}</span>
-
     <!-- <pre>_______________ALL VOTES_____________________</pre>
     <pre style="color: white;">{{ allVotes }}</pre>
     <pre>_______________ALL USERS_____________________</pre>
@@ -38,10 +36,10 @@
           </div>
         </div>
 
-      <div class="topComments">
-        <div style="color: #00aeff">Top comment agreeing</div>
-        <div style="color: red">Top comment disagreeing</div>
-        <div style="color: orangered">Top comment with other perspective</div>
+      <div class="topComments" v-if="topCommentAgree && topCommentDisagree && topCommentAlt">
+        <div style="color: #00aeff">{{ topCommentAgree.votesum }} {{topCommentAgree.body}}</div>
+        <div style="color: red">{{ topCommentDisagree.votesum }} {{ topCommentDisagree.body }}</div>
+        <div style="color: orangered">{{ topCommentAlt.votesum }} {{ topCommentAlt.body }}</div>
       </div>
 
         <!-- Add Comment -->
@@ -50,18 +48,20 @@
           <input type="submit" value="Add" @click="addComment(topic._id)" />
         </div>
 
+        <div v-for="comment in topic.comments" :key="comment._id">
+          <!-- <pre>{{ comment }}</pre> -->
+          <Comment :this-comment="comment"></Comment>
+        </div>
 
-        <div v-for="comment in allComments" :key="comment._id" class="comment" style="position: relative;">
+        <!-- Comment -->
+        <!-- <div v-for="comment in allComments" :key="comment._id" class="comment">
           <div v-if="topic.comments.includes(comment._id)">
-            <!-- <span v-for="vote in comment.votes" :key="vote._id">{{ vote.value || 0}}</span> -->
-            <span>{{ voteTotal(comment) }}</span>
-            <!-- <pre>{{ comment.votes }}</pre> -->
-            [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/> {{ comment.upvotes || 0 }} | {{ comment.downvotes || 0 }} <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ]
+            [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/>
+            <span style="padding: 5px">{{ voteTotal(comment) }}</span>
+            <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ]
           
-          <!-- Edit Comment Body -->
           <div v-if="comment._id == commentToEdit._id && isEditingComment" class="comment-edit">
             <input type="text" v-model="comment.body" class="comment-edit-input" :size="comment.body.length">
-            <!-- <textarea type="text" v-model="comment.body" class="comment-edit-input" :size="comment.body.length"></textarea> -->
             <button @click.prevent="updateComment(comment)" >Save</button>
             <button @click.prevent="cancel" >Cancel</button>
           </div>
@@ -76,7 +76,7 @@
            </div>
           </div>
           </div>
-        </div>
+        </div> -->
 
         <div class="aboutBar"> {{ index }} | 
           <div v-for="user in allUsers" :key="user._id">
@@ -104,6 +104,7 @@
 </template>
 
 <script>
+import Comment from '../components/comment'
 import ConfirmDialog from "../components/confirmDialog";
 import EditModal from "../components/editModal";
 import UserService from '../services/user.service';
@@ -111,7 +112,7 @@ import CommentService from '../services/comment.service';
 
 export default {
   name: "Dashboard",
-  components: { ConfirmDialog, EditModal },
+  components: { ConfirmDialog, EditModal, Comment},
   data() {
     return {
       allTopics: null,
@@ -141,6 +142,10 @@ export default {
       },
       isModalVisible: false,
       isEditingComment: false,
+
+      topCommentAgree: null,
+      topCommentDisagree: null,
+      topCommentAlt: null
     };
   },
 
@@ -281,8 +286,11 @@ export default {
         "currentUserId": currentUser.id
       }).then(() => {
         this.getAllVotes();
-          this.getAllComments();
-          this.getAllUsers();
+        this.getAllComments();
+        this.getAllUsers();
+        this.topAgree();
+        this.topDisagree();
+        this.topAlt();
         })
       }
     },
@@ -298,8 +306,29 @@ export default {
           this.getAllComments();
           this.getAllVotes();
           this.getAllUsers();
+          this.topAgree();
+          this.topDisagree();
+          this.topAlt();
         })
       }
+    },
+
+     topAgree() {
+      return this.$store.dispatch('comment/getTopAgree').then(res => {
+        this.topCommentAgree = res.data.comment;
+      });
+    },
+
+    topDisagree() {
+      return this.$store.dispatch('comment/getTopDisagree').then(res => {
+        this.topCommentDisagree = res.data.comment;
+      });
+    },
+
+    topAlt() {
+      return this.$store.dispatch('comment/getTopAlt').then(res => {
+        this.topCommentAlt = res.data.comment;
+      });
     },
 
     //Modal Logic
@@ -316,6 +345,9 @@ export default {
     this.getAllComments();
     this.getAllUsers();
     this.getAllVotes();
+    this.topAgree();
+    this.topDisagree();
+    this.topAlt();
   },
 
 };
@@ -332,52 +364,8 @@ export default {
   color: cyan;
 }
 
-.comment {
-  margin: 5px auto;
-  /* width: 95%; */
-}
-
-.comment:hover {
-  /* border-bottom: 1px solid black; */
-}
-
-.comment-body-negative {
-  text-decoration: underline 1px solid red;
-}
-
-.comment-body-positive {
-  text-decoration: underline 1px solid #00aeff;
-}
-
-.comment-body-neutral {
-  text-decoration: underline 1px solid orange;
-}
-
-.comment-edit {
-  text-align: center;
-  display: inline-block;
-}
-
-.comment-edit button {
-  color: black;
-  background-color: transparent;
-  border: 2px solid #00aeff;
-  margin: .25em;
-}
-
-.comment-edit button:hover {
-  color: black;
-  background-color: #00aeff;
-  border: 2px solid black;
-  margin: .25em;
-}
-
-.comment-edit-input {
-
-}
-
 .jumbotron {
-  background-color: #00ff2a;
+  background-color: rgb(4, 127, 199);
   min-height: 100vh;
   height: 100%;
 }
@@ -422,20 +410,6 @@ export default {
 
 .aboutBar div {
   display: inline-block;
-}
-
- /* ========================Icons================================ */
-
-.arrow-up {
-  color: #00aeff;
-}
-
-.arrow-up:hover, .arrow-down:hover {
-  cursor: pointer;
-}
-
-.arrow-down {
-  color: red;
 }
 
 </style>

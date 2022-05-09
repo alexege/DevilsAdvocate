@@ -75,6 +75,36 @@ class CommentService {
     });
   }
 
+  getTopAgree() {
+    return axios.get(API_URL + "getTopAgree")
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    })
+  }
+
+  getTopDisagree() {
+    return axios.get(API_URL + "getTopDisagree")
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    })
+  }
+  
+  getTopAlt() {
+    return axios.get(API_URL + "getTopAlt")
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    })
+  }
+
   allVotes() {
     return axios
       .get(API_URL + "allVotes")

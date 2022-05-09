@@ -18,6 +18,7 @@ const Comment = mongoose.model(
                 ref: 'Vote'
             },
         ],
+        votesum: Number
     },
     { timestamps: true})
 );
