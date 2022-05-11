@@ -9,6 +9,8 @@
       @update-topic="updateTopic"
     />
 
+    <pre style="color: limegreen">allComments: {{$store.state.comment.allComments}}</pre>
+
     <!-- <pre>_______________ALL VOTES_____________________</pre>
     <pre style="color: white;">{{ allVotes }}</pre>
     <pre>_______________ALL USERS_____________________</pre>
@@ -50,7 +52,7 @@
 
         <div v-for="comment in topic.comments" :key="comment._id">
           <!-- <pre>{{ comment }}</pre> -->
-          <Comment :this-comment="comment"></Comment>
+          <Comment :this-comment="comment" @all-comments="getAllComments" style="position: relative;"></Comment>
         </div>
 
         <!-- Comment -->
@@ -248,8 +250,15 @@ export default {
     },
 
     getAllComments() {
+      // this.allComments = this.$store.state.comment.allComments;
+      console.log("Getting all commments - dashboard");
       return this.$store.dispatch('comment/allComments').then(res => {
+        console.log("result:", res.data.comments);
         this.allComments = res.data.comments;
+        // this.$store.dispatch('allComments', res.data.comments);
+        this.$store.dispatch('comment/allComments', res.data.comments);
+
+        this.allComments = this.$store.state.comment.allComments;
       });
     },
 

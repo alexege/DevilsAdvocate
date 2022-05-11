@@ -1,7 +1,7 @@
 <template>
     <div>
         <confirm-dialog ref="confirmDialog"></confirm-dialog>
-        <pre>{{thisComment }}</pre>
+
         [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(thisComment)"/>
         <span style="padding: 5px">{{ thisComment.votes.length }}</span>
         <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(thisComment)"/> ] [Author: {{ thisComment.author}}] [ID: {{thisComment._id}}] [Votes: {{thisComment.votes}}]
@@ -37,7 +37,7 @@ export default {
             isModalVisible: false,
             currentUser: null,
 
-            commentToEdit: {}
+            commentToEdit: {},
         }
     },
     methods: {
@@ -53,6 +53,21 @@ export default {
         "comment": comment,
         "currentUserId": currentUser.id
       }).then(() => {
+        this.$emit('all-comments');
+      
+      // if(currentUser) {
+      //   return this.$store.dispatch('comment/likeComment', {
+      //   "comment": comment,
+      //   "currentUserId": currentUser.id
+      // }).then(() => {
+      //   this.$emit('all-comments');
+
+
+      // return this.$store.dispatch('comment/allComments').then(res => {
+      //   console.log("result:", res.data.comments);
+      //   this.allComments = res.data.comments;
+      // });
+
         // this.getAllVotes();
         // this.getAllComments();
         // this.getAllUsers();
@@ -81,18 +96,22 @@ export default {
       }
     },
 
-        editComment(comment) {
-            this.isEditingComment = !this.isEditingComment;
-            this.commentToEdit._id = comment._id;
-            this.commentToEdit.body = comment.body;
-        },
+    editComment(comment) {
+        this.isEditingComment = !this.isEditingComment;
+        this.commentToEdit._id = comment._id;
+        this.commentToEdit.body = comment.body;
+    },
 
-        updateComment(commentId) {
-            this.isEditingComment = !this.isEditingComment;
-            return this.$store.dispatch(`comment/editComment`, commentId).then(() => {
-                // this.getAllComments();
-            });
-        },
+    updateComment(commentId) {
+        this.isEditingComment = !this.isEditingComment;
+        return this.$store.dispatch(`comment/editComment`, commentId).then(() => {
+            // this.getAllComments();
+        });
+    },
+
+    cancel() {
+      this.isEditingComment = false;
+    },
 
     deleteComment(comment) {
 
@@ -111,10 +130,19 @@ export default {
           }
         })
     },
+  },
+
+  computed: {
+  },
+
+  mounted() {
+    console.log("Grabbing all commments");
+    // this.thisComment = this.$store.allComments;
   }
 }
 </script>
 <style scoped>
+
 .comment {
   margin: 5px auto;
   /* width: 95%; */
