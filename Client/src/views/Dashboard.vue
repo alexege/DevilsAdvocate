@@ -50,7 +50,7 @@
 
         <div v-for="comment in topic.comments" :key="comment._id">
           <!-- <pre>{{ comment }}</pre> -->
-          <Comment :this-comment="comment"></Comment>
+          <Comment :this-comment="comment" @all-comments="getAllComments" style="position: relative;"></Comment>
         </div>
 
         <!-- Comment -->
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import Comment from '../components/comment'
+import Comment from "../components/comment";
 import ConfirmDialog from "../components/confirmDialog";
 import EditModal from "../components/editModal";
 import UserService from '../services/user.service';
@@ -248,8 +248,16 @@ export default {
     },
 
     getAllComments() {
+      // this.allComments = this.$store.state.comment.allComments;
+      console.log("Getting all commments - dashboard");
       return this.$store.dispatch('comment/allComments').then(res => {
+        console.log("result:", res.data.comments);
         this.allComments = res.data.comments;
+        // this.$store.dispatch('allComments', res.data.comments);
+        // this.$store.dispatch('comment/allComments', res.data.comments);
+
+        // this.allComments = this.$store.state.comment.allComments;
+        this.getAllTopics();
       });
     },
 

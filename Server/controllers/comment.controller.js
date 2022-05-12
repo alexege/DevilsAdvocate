@@ -107,7 +107,8 @@ exports.likeComment = async (req, res) => {
             console.log("error: ", err);
           });
 
-        res.status(200).send({ message: "Done" });
+        // res.status(200).send({ message: "Done" });
+        res.status(200).send({ comment });
       } else {
         // Create a new Vote Object
         const newVote = new Vote({
@@ -381,6 +382,7 @@ exports.getTopAlt = (req, res) => {
 //   );
 // };
 exports.allVotes = (req, res) => {
+  console.log("Getting all votes");
   Vote.find({}, (err, votes) => {
     if (err) {
       res.status(500).send({ message: err });

@@ -3,7 +3,9 @@ import CommentService from "../services/comment.service";
 export const comment = {
     namespaced: true,
     state: () => ({
-        comment: {}
+        allTopics: [],
+        allComments: [],
+        allVotes: []
     }),
 
     actions: {
@@ -43,14 +45,14 @@ export const comment = {
             });
         },
 
-        allComments({ commit }, comment) {
+        allComments({ commit }, allComment) {
             return CommentService.allComments()
             .then(comments => {
-                commit('allCommentsSuccess', comment);
+                commit('allCommentsSuccess', allComment);
                 return Promise.resolve(comments);
             },
             error => {
-                commit('allCommentsFailure', comment);
+                commit('allCommentsFailure', allComment);
                 return Promise.reject(error);
             });
         },
@@ -130,8 +132,9 @@ export const comment = {
 
     mutations: {
         addCommentSuccess(
-            // state, topic
+            // state, comment
             ) {
+            // state.allComments.push(comment);
             // console.log("state: ", state);
             // console.log("topic: ", topic);
         },
@@ -166,10 +169,9 @@ export const comment = {
             // console.log("topic: ", topic);
         },
         allCommentsSuccess(
-            // state, topic
+            // state, comments
             ) {
-            // console.log("state: ", state);
-            // console.log("topic: ", topic);
+            // state.allComments = comments;
         },
         allCommentsFailure(
             // state, topic
