@@ -168,10 +168,8 @@ export const comment = {
             // console.log("state: ", state);
             // console.log("topic: ", topic);
         },
-        allCommentsSuccess(
-            // state, comments
-            ) {
-            // state.allComments = comments;
+        allCommentsSuccess(state, comments) {
+            state.allComments = comments;
         },
         allCommentsFailure(
             // state, topic

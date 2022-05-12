@@ -9,6 +9,8 @@
       @update-topic="updateTopic"
     />
 
+    <pre style="color: limegreen">allComments: {{$store.state.comment.allComments}}</pre>
+
     <!-- <pre>_______________ALL VOTES_____________________</pre>
     <pre style="color: white;">{{ allVotes }}</pre>
     <pre>_______________ALL USERS_____________________</pre>
