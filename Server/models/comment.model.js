@@ -4,6 +4,10 @@ const Comment = mongoose.model(
     "Comment",
     new mongoose.Schema({
         body: String,
+        topic: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Topic'
+        },
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

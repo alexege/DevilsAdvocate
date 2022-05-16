@@ -19,7 +19,7 @@ module.exports = function(app) {
     app.post("/api/comment/likeComment/:id", controller.likeComment);
     app.post("/api/comment/dislikeComment/:id", controller.dislikeComment);
     
-    app.get("/api/comment/getTopAgree", controller.getTopAgree);
-    app.get("/api/comment/getTopDisagree", controller.getTopDisagree);
-    app.get("/api/comment/getTopAlt", controller.getTopAlt);
+    app.get("/api/comment/getTopAgree/:topicId", controller.getTopAgree);
+    app.get("/api/comment/getTopDisagree/:id", controller.getTopDisagree);
+    app.get("/api/comment/getTopAlt/:id", controller.getTopAlt);
 };

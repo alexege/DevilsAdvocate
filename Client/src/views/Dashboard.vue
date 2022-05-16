@@ -2,33 +2,12 @@
   <div class="container">
     <confirm-dialog ref="confirmDialog"></confirm-dialog>
 
-    <edit-modal
-      v-show="isModalVisible"
-      @close="closeModal"
-      :topicToEdit="topicToEdit"
-      @update-topic="updateTopic"
-    />
-
-    <pre style="color: limegreen">allComments: {{$store.state.comment.allComments}}</pre>
-
-    <!-- <pre>_______________ALL VOTES_____________________</pre>
-    <pre style="color: white;">{{ allVotes }}</pre>
-    <pre>_______________ALL USERS_____________________</pre>
-    <pre style="color: white;">{{ allUsers }}</pre>
-    <pre>_______________ALL COMMENTS_____________________</pre>
-    <pre style="color:white" v-for="comment in allComments" :key="comment._id">{{comment.votes}}</pre>
-    <pre>____________________________________</pre> -->
-
-
-    <!-- <span style="color:cyan">============== all Votes ==============</span>
-    <pre style="color: white;" v-for="vote in allVotes" :key="vote._id">Comment: {{ vote.comment }} User: {{ vote.user }}</pre>
-    <span style="color:cyan">============== all Comments ==============</span>
-    <pre style="color: white;" v-for="comment in allComments" :key="comment._id">Votes: {{ comment.votes }}</pre>
-    <span style="color:cyan">============== all Users ==============</span>
-    <pre style="color: white;" v-for="user in allUsers" :key="user._id">id: {{ user._id }} votes: {{ user.votes }}</pre> -->
+    <edit-modal v-show="isModalVisible" @close="closeModal" :topicToEdit="topicToEdit" @update-topic="updateTopic" />
 
     <header class="jumbotron">
+
       <div v-for="(topic, index) in allTopics" :key="topic._id" class="topic">
+        
         <div>
           <h5 class="title">{{ topic.name }}</h5>
           <div class="topic-body">
@@ -38,11 +17,12 @@
           </div>
         </div>
 
-      <div class="topComments" v-if="topCommentAgree && topCommentDisagree && topCommentAlt">
-        <div style="color: #00aeff">{{ topCommentAgree.votesum }} {{topCommentAgree.body}}</div>
-        <div style="color: red">{{ topCommentDisagree.votesum }} {{ topCommentDisagree.body }}</div>
-        <div style="color: orangered">{{ topCommentAlt.votesum }} {{ topCommentAlt.body }}</div>
-      </div>
+        <!-- Top Comment -->
+        <div class="topComments">
+          <Comment :this-comment="highestVoteSumComment(topic.comments)" class="comment comment-agree"></Comment>
+          <Comment :this-comment="lowestVoteSumComment(topic.comments)" class="comment comment-disagree"></Comment>
+          <Comment :this-comment="altVoteSumComment(topic.comments)" class="comment comment-alt"></Comment>        
+        </div>
 
         <!-- Add Comment -->
         <div class="commentInput">
@@ -50,42 +30,18 @@
           <input type="submit" value="Add" @click="addComment(topic._id)" />
         </div>
 
+        <!-- All Topic Comments -->
         <div v-for="comment in topic.comments" :key="comment._id">
-          <!-- <pre>{{ comment }}</pre> -->
           <Comment :this-comment="comment" @all-comments="getAllComments" style="position: relative;"></Comment>
         </div>
 
-        <!-- Comment -->
-        <!-- <div v-for="comment in allComments" :key="comment._id" class="comment">
-          <div v-if="topic.comments.includes(comment._id)">
-            [ <font-awesome-icon icon="arrow-up" class="arrow-up" @click="likeComment(comment)"/>
-            <span style="padding: 5px">{{ voteTotal(comment) }}</span>
-            <font-awesome-icon icon="arrow-down" class="arrow-down" @click="dislikeComment(comment)"/> ]
-          
-          <div v-if="comment._id == commentToEdit._id && isEditingComment" class="comment-edit">
-            <input type="text" v-model="comment.body" class="comment-edit-input" :size="comment.body.length">
-            <button @click.prevent="updateComment(comment)" >Save</button>
-            <button @click.prevent="cancel" >Cancel</button>
-          </div>
-
-          <div v-else class="comment-edit" >
-           
-           <span class="comment-body" >{{ comment.body }}</span>
-           <div style="display: inline-block; position: absolute; right: 0;">
-            <a href="" @click.prevent="updateComment(comment)" class="edit-btn" v-if="isEditingComment"><font-awesome-icon icon="check" /></a>
-            <a href="" @click.prevent="editComment(comment)"><font-awesome-icon icon="edit" class="action-icon" /></a>
-            <a href="" @click.prevent="deleteComment(comment._id)"><font-awesome-icon icon="trash" class="action-icon"/></a>
-           </div>
-          </div>
-          </div>
-        </div> -->
-
+        <!-- Author and other info -->
         <div class="aboutBar"> {{ index }} | 
           <div v-for="user in allUsers" :key="user._id">
             <div v-if="user._id == topic.author">
               {{ user.username }}
             </div>
-            </div>
+          </div>
            | {{ new Date(topic.createdAt).toLocaleDateString() }} | {{ new Date(topic.updatedAt).toLocaleTimeString() }}
         </div>
 
@@ -101,16 +57,17 @@
         />
         <input type="submit" value="Submit" @click="addTopic" />
       </div>
+
     </header>
   </div>
 </template>
 
 <script>
 import Comment from "../components/comment";
+import CommentService from '../services/comment.service';
 import ConfirmDialog from "../components/confirmDialog";
 import EditModal from "../components/editModal";
 import UserService from '../services/user.service';
-import CommentService from '../services/comment.service';
 
 export default {
   name: "Dashboard",
@@ -118,7 +75,7 @@ export default {
   data() {
     return {
       allTopics: null,
-      allComments: null,    //Array of comment objects
+      allComments: null,
       allUsers: null,
       allVotes: null,
 
@@ -168,7 +125,6 @@ export default {
     },
 
     updateTopic(id) {
-      console.log("id:", id);
       return this.$store.dispatch(`topic/editTopic`, id).then(() => {
         this.isModalVisible = false;
         this.getAllTopics();
@@ -251,9 +207,7 @@ export default {
 
     getAllComments() {
       // this.allComments = this.$store.state.comment.allComments;
-      console.log("Getting all commments - dashboard");
       return this.$store.dispatch('comment/allComments').then(res => {
-        console.log("result:", res.data.comments);
         this.allComments = res.data.comments;
         // this.$store.dispatch('allComments', res.data.comments);
         // this.$store.dispatch('comment/allComments', res.data.comments);
@@ -298,9 +252,9 @@ export default {
         this.getAllVotes();
         this.getAllComments();
         this.getAllUsers();
-        this.topAgree();
-        this.topDisagree();
-        this.topAlt();
+        // this.topAgree();
+        // this.topDisagree();
+        // this.topAlt();
         })
       }
     },
@@ -316,29 +270,45 @@ export default {
           this.getAllComments();
           this.getAllVotes();
           this.getAllUsers();
-          this.topAgree();
-          this.topDisagree();
-          this.topAlt();
+          // this.topAgree();
+          // this.topDisagree();
+          // this.topAlt();
         })
       }
     },
 
-     topAgree() {
-      return this.$store.dispatch('comment/getTopAgree').then(res => {
-        this.topCommentAgree = res.data.comment;
-      });
-    },
+    // topAgree(topicId) {
+    //   return this.$store.dispatch("comment/getTopAgree", topicId)
+    //   .then(res => {
+    //     this.topCommentAgree = res.data.comment;
+    //     // return res.data.comment;
+    //   })
+    //   .catch(e => {
+    //     console.log("error:", e);
+    //   });
+    // },
 
-    topDisagree() {
-      return this.$store.dispatch('comment/getTopDisagree').then(res => {
-        this.topCommentDisagree = res.data.comment;
-      });
-    },
+  //   topDisagree(topicId) {
+  //     return this.$store.dispatch(`comment/getTopDisagree/${topicId}`).then(res => {
+  //       this.topCommentDisagree = res.data.comment;
+  //     });
+  //   },
 
-    topAlt() {
-      return this.$store.dispatch('comment/getTopAlt').then(res => {
-        this.topCommentAlt = res.data.comment;
-      });
+  //   topAlt(topicId) {
+  //     return this.$store.dispatch(`comment/getTopAlt/${topicId}`).then(res => {
+  //       this.topCommentAlt = res.data.comment;
+  //     });
+  //   },
+    highestVoteSumComment(comments) {
+      return comments.slice().sort((a, b) => b.votesum - a.votesum)[0];
+    },
+   
+   lowestVoteSumComment(comments) {
+      return comments.slice().sort((a, b) => a.votesum - b.votesum)[0];
+    },
+   
+   altVoteSumComment(comments) {
+      return comments.slice().sort((a, b) => b.votesum - a.votesum)[0];
     },
 
     //Modal Logic
@@ -350,14 +320,18 @@ export default {
     },
   },
 
+  computed: {
+    
+  },
+
   mounted() {
     this.getAllTopics();
     this.getAllComments();
     this.getAllUsers();
     this.getAllVotes();
-    this.topAgree();
-    this.topDisagree();
-    this.topAlt();
+    // this.topAgree();
+    // this.topDisagree();
+    // this.topAlt();
   },
 
 };
@@ -407,6 +381,18 @@ export default {
 
 .commentInput input[type="submit"] {
   width: 10%;
+}
+
+.comment-agree {
+  color: #00aeff;
+}
+
+.comment-disagree {
+  color: red;
+}
+
+.comment-alt {
+  color: orangered;
 }
 
 .topComments {

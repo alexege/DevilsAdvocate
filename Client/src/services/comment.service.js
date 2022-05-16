@@ -75,8 +75,8 @@ class CommentService {
     });
   }
 
-  getTopAgree() {
-    return axios.get(API_URL + "getTopAgree")
+  getTopAgree(topicId) {
+    return axios.get(API_URL + `getTopAgree/${topicId}`)
     .then((res) => {
       return res;
     })

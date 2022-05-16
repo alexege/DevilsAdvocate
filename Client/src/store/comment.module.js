@@ -81,14 +81,14 @@ export const comment = {
             })
         },
         
-        getTopAgree({ commit }, comment) {
-            return CommentService.getTopAgree(comment)
-            .then(comments => {
-                commit('getTopAgreeSuccess', comment);
-                return Promise.resolve(comments);
+        getTopAgree({ commit }, topicId) {
+            return CommentService.getTopAgree(topicId)
+            .then(comment => {
+                commit('getTopAgreeSuccess', topicId);
+                return Promise.resolve(comment);
             },
             error => {
-                commit('getTopAgreeFailure', comment);
+                commit('getTopAgreeFailure', topicId);
                 return Promise.reject(error);
             })
         },

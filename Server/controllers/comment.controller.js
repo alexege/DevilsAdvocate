@@ -9,6 +9,7 @@ var mongoose = require("mongoose");
 // const Votes = db.votes;
 exports.addComment = (req, res) => {
   const comment = new Comment({
+    topic: req.body.topicId,
     body: req.body.body,
     author: req.body.author,
     votesum: 0
@@ -100,6 +101,9 @@ exports.likeComment = async (req, res) => {
           .then((comment) => {
             let voteIndex = comment.votes.indexOf(existingVote._id);
             if (voteIndex > -1) comment.votes.splice(voteIndex, 1);
+            if(existingVote.value == 1){
+              comment.votesum -= 1;
+            }
             comment.save();
             return;
           })
@@ -173,6 +177,9 @@ exports.dislikeComment = async (req, res) => {
           .then((comment) => {
             let voteIndex = comment.votes.indexOf(existingVote._id);
             if (voteIndex > -1) comment.votes.splice(voteIndex, 1);
+            if(existingVote.value == -1){
+              comment.votesum += 1;
+            }
             comment.save();
             return;
           })
@@ -216,13 +223,15 @@ exports.dislikeComment = async (req, res) => {
 };
 
 exports.getTopAgree = (req, res) => {
-  Comment.find({}, (err, comment) => {
+  Comment.find({ topic: req.params.topicId }, (err, comment) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
-    res.status(200).send({ comment: comment[0] });
-  }).sort([["votesum", "descending"]]).limit(1);
+    res.status(200).send({ comment: comment });
+  })
+  .populate("votes")
+  .sort([["votesum", "descending"]]).limit(1);
 };
 
 exports.getTopDisagree = (req, res) => {
