@@ -9,7 +9,7 @@
     <!-- [Author: {{ thisComment.author }}] [ID: {{ thisComment._id }}] [Votes: {{ thisComment.votes }}] -->
 
     <div v-if="isEditingComment" class="comment-edit">
-      <input type="text" v-model="thisComment.body" class="comment-edit-input" :size="thisComment.body.length" />
+      <input type="text" v-model="thisComment.body" class="comment-edit-input" :size="thisComment.body.length" @keyup.enter="updateComment(thisComment)" @keyup.esc="cancel"/>
       <button @click.prevent="updateComment(thisComment)">Save</button>
       <button @click.prevent="cancel">Cancel</button>
     </div>
@@ -144,7 +144,7 @@ export default {
 }
 
 .comment-edit button {
-  color: black;
+  color: #00aeff;
   background-color: transparent;
   border: 2px solid #00aeff;
   margin: 0.25em;

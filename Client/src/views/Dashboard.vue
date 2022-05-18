@@ -26,7 +26,7 @@
 
         <!-- Add Comment -->
         <div class="commentInput">
-          <input type="text" v-model="comment.body" placeholder="Comment" />
+          <input type="text" v-model="comment.body" placeholder="Comment" @keyup.enter="addComment(topic._id)"/>
           <input type="submit" value="Add" @click="addComment(topic._id)" />
         </div>
 
@@ -109,6 +109,10 @@ export default {
   },
 
   methods: {
+    test() {
+      console.log("testing");
+    },
+
     addTopic() {
       return this.$store.dispatch("topic/addTopic", this.topic).then(() => {
         this.topic.name = "";
@@ -340,7 +344,7 @@ export default {
 <style scoped>
 .action-icon {
   margin: 0 4px;
-  color: black;
+  color: white;
   /* float: right; */
 }
 
@@ -349,7 +353,8 @@ export default {
 }
 
 .jumbotron {
-  background-color: rgb(4, 127, 199);
+  /* background-color: rgb(4, 127, 199); */
+  background-color: black;
   min-height: 100vh;
   height: 100%;
 }
@@ -359,10 +364,12 @@ export default {
 }
 
 .topic {
-  border: 1px solid black;
+  border: 1px solid white;
+  border-radius: 15px;
   padding: 10px;
   margin: 20px 0;
   transition: all .2s ease-in-out;
+  color: white;
 }
 
 .topic:hover {
