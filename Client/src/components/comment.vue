@@ -16,7 +16,7 @@
 
     <div v-else class="comment-edit">
       <span class="comment-body">{{ thisComment.body }}</span>
-      <div style="display: inline-block; position: absolute; right: 0;">
+      <div class="comment-options">
         <a href="" @click.prevent="updateComment(thisComment)" class="edit-btn" v-if="isEditingComment"><font-awesome-icon icon="check"/></a>
         <a href="" @click.prevent="editComment(thisComment)"><font-awesome-icon icon="edit" class="action-icon"/></a>
         <a href="" @click.prevent="deleteComment(thisComment._id)"
@@ -117,7 +117,7 @@ export default {
 </script>
 <style scoped>
 .comment {
-  margin: 5px auto;
+  margin: 10px auto;
   /* width: 95%; */
   position: relative;
 }
@@ -136,6 +136,21 @@ export default {
 
 .comment-body-neutral {
   text-decoration: underline 1px solid orange;
+}
+
+.comment-options {
+  display: inline-block; 
+  position: absolute; 
+  right: 0;
+}
+
+.comment-options a {
+  padding: 0 5px;
+  color: white;
+}
+
+.comment-options a:hover {
+  color: cyan;
 }
 
 .comment-edit {

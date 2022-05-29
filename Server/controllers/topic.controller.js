@@ -20,6 +20,7 @@ exports.addTopic = (req, res) => {
     name: req.body.name,
     description: req.body.description,
     author: req.body.author,
+    commentBody: null
   });
 
   topic.save((err, topic) => {

@@ -9,6 +9,7 @@ const Topic = mongoose.model(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
+        commentBody: String,
         comments: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Comment'

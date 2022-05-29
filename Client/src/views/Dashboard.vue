@@ -6,14 +6,16 @@
 
     <header class="jumbotron">
 
+      <!-- <pre style="color: white">{{ allTopics }}</pre> -->
+
       <div v-for="(topic, index) in allTopics" :key="topic._id" class="topic">
         
-        <div>
+        <div class="topic-container">
           <h5 class="title">{{ topic.name }}</h5>
-          <div class="topic-body">
-            {{ topic.description }}
-            <a href="" @click.prevent="editTopic(topic)"><font-awesome-icon icon="edit" class="action-icon" /></a>
-            <a href="" @click.prevent="deleteTopic(topic._id)"><font-awesome-icon icon="trash" class="action-icon" /></a>
+          <div class="topic-body">{{ topic.description }}</div>
+          <div class="topic-options">
+              <a href="" @click.prevent="editTopic(topic)"><font-awesome-icon icon="edit" class="action-icon" /></a>
+              <a href="" @click.prevent="deleteTopic(topic._id)"><font-awesome-icon icon="trash" class="action-icon" /></a>
           </div>
         </div>
 
@@ -26,13 +28,13 @@
 
         <!-- Add Comment -->
         <div class="commentInput">
-          <input type="text" v-model="comment.body" placeholder="Comment" @keyup.enter="addComment(topic._id)"/>
-          <input type="submit" value="Add" @click="addComment(topic._id)" />
+          <input type="text" v-model="allTopics[index].commentBody" placeholder="Comment" @keyup.enter="addComment(topic)"/>
+          <input type="submit" value="Add" @click="addComment(topic)" />
         </div>
 
         <!-- All Topic Comments -->
         <div v-for="comment in topic.comments" :key="comment._id">
-          <Comment :this-comment="comment" @all-comments="getAllComments" style="position: relative;"></Comment>
+          <Comment :this-comment="comment" @all-comments="getAllComments" class="comment" style="position: relative;"></Comment>
         </div>
 
         <!-- Author and other info -->
@@ -161,10 +163,12 @@ export default {
         });
     },
 
-    addComment(topicId) {
+    addComment(topic) {
+      console.log("Adding comment");
       const comment = {
-        topicId: topicId,
-        body: this.comment.body
+        topicId: topic._id,
+        // body: this.comment.body
+        body: topic.commentBody
       }
 
       return this.$store.dispatch("comment/addComment", comment).then(() => {
@@ -354,7 +358,7 @@ export default {
 
 .jumbotron {
   /* background-color: rgb(4, 127, 199); */
-  background-color: black;
+  background-color: #0E0E10;
   min-height: 100vh;
   height: 100%;
 }
@@ -365,11 +369,15 @@ export default {
 
 .topic {
   border: 1px solid white;
-  border-radius: 15px;
+  border-radius: 8px;
   padding: 10px;
   margin: 20px 0;
   transition: all .2s ease-in-out;
   color: white;
+}
+
+.topic-container {
+  position: relative;
 }
 
 .topic:hover {
@@ -378,8 +386,17 @@ export default {
 }
 
 .topic-body {
-  display: inline-block;
   padding: 10px;
+  width: 75%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.topic-options {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .commentInput input {
@@ -403,7 +420,6 @@ export default {
 }
 
 .topComments {
-  border-top: 1px solid black;
   padding: 10px;
 }
 

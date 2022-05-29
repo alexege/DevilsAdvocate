@@ -8,6 +8,7 @@ const Comment = db.comment;
 var mongoose = require("mongoose");
 // const Votes = db.votes;
 exports.addComment = (req, res) => {
+  console.log("req.body", req.body);
   const comment = new Comment({
     topic: req.body.topicId,
     body: req.body.body,
